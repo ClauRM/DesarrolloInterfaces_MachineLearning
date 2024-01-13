@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Machine Learning</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas width="512" height="512" id="lienzo1"></canvas>
+    <canvas width="512" height="512" id="lienzo2"></canvas>
+    <script>
+        window.onload = function () {
+            var canvas1 = document.getElementById("lienzo1").getContext("2d");
+            var canvas2 = document.getElementById("lienzo2").getContext("2d");
+            let imagen = new Image(); //crear objeto imagen
+            imagen.src = "../img/mano.png"; //src de la imagen
+            imagen.onload = function () {
+                //dibujar la imagen original en coordenadas 0,0 sobre el canvas 1
+                canvas1.drawImage(imagen, 0, 0);
+                canvas2.fillStyle = "white";
+                canvas2.fillRect(0, 0, 512, 512); //rectangulo blanco en el canvas 2
+                //detectar bordes en la imagen
+                let imagenlienzo1 = canvas1.getImageData(0, 0, 512, 512);
+                let imagenlienzo2 = canvas2.getImageData(0, 0, 512, 512);
+                //recorrer la imagen pixel al pixel para encontrar donde esta el borde
+                for (let i = 0; i < imagenlienzo1.data.length; i += 4) { //cada 4 pixeles
+                    let diferenciaVertical = Math.abs(imagenlienzo1.data[i] - imagenlienzo1.data[i + 4]);
+                    let diferenciaHorizontal = Math.abs(imagenlienzo1.data[i] - imagenlienzo1.data[i + 512 * 4]);
+                    if (diferenciaVertical > 10 || diferenciaHorizontal > 10) { //si la diferencia es mayor pintar un pixel negro
+                        imagenlienzo2.data[i] = 0;
+                        imagenlienzo2.data[i + 1] = 0;
+                        imagenlienzo2.data[i + 2] = 0;
+                        imagenlienzo2.data[i + 3] = 255;
+                    } else { //sino pintar un pixel blanco
+                        imagenlienzo2.data[i] = 255;
+                        imagenlienzo2.data[i + 1] = 255;
+                        imagenlienzo2.data[i + 2] = 255;
+                        imagenlienzo2.data[i + 3] = 255;
+                    }
+                }
+                //pintar los contornos en el canvas 2
+                canvas2.putImageData(imagenlienzo2, 0, 0);
+            }
+        }
+    </script>
+</body>
+
+</html>
