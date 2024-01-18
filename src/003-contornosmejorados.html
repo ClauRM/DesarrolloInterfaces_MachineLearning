@@ -17,35 +17,38 @@
     <canvas width="512" height="512" id="lienzo2"></canvas>
     <script>
         window.onload = function () {
+            //Cargar contexto del lienzo1 para pintar en este
             var canvas1 = document.getElementById("lienzo1").getContext("2d");
+            //Cargar contexto del lienzo2 para pintar en este
             var canvas2 = document.getElementById("lienzo2").getContext("2d");
             let imagen = new Image(); //crear objeto imagen
             imagen.src = "../img/mano.png"; //src de la imagen
+            //cuando la imagen cargue ejecutar funcion
             imagen.onload = function () {
-                //dibujar la imagen original en coordenadas 0,0 sobre el canvas 1
+                //dibujar la imagen original en coordenadas 0,0 sobre el lienzo1
                 canvas1.drawImage(imagen, 0, 0);
-                canvas2.fillStyle = "white";
-                canvas2.fillRect(0, 0, 512, 512); //rectangulo blanco en el canvas 2
                 //detectar bordes en la imagen
-                let imagenlienzo1 = canvas1.getImageData(0, 0, 512, 512);
-                let imagenlienzo2 = canvas2.getImageData(0, 0, 512, 512);
+                let imagenlienzo1 = canvas1.getImageData(0, 0, 512, 512); //cargar la imagen1 en memoria
+                let imagenlienzo2 = canvas2.getImageData(0, 0, 512, 512); //cargar la imagen2 en memoria
                 //recorrer la imagen pixel al pixel para encontrar donde esta el borde
-                for (let i = 0; i < imagenlienzo1.data.length; i += 4) { //cada 4 pixeles
-                    let diferenciaVertical = Math.abs(imagenlienzo1.data[i] - imagenlienzo1.data[i + 4]);
-                    let diferenciaHorizontal = Math.abs(imagenlienzo1.data[i] - imagenlienzo1.data[i + 512 * 4]);
-                    if (diferenciaVertical > 10 || diferenciaHorizontal > 10) { //si la diferencia es mayor pintar un pixel negro
+                for (let i = 0; i < imagenlienzo1.data.length; i += 4) { //cada pixel tiene 4 componentes
+                    let diferenciaHorizontal = Math.abs(imagenlienzo1.data[i] - imagenlienzo1.data[i + 4]); //diferencia del rojo en horizontal
+                    let diferenciaVertical = Math.abs(imagenlienzo1.data[i] - imagenlienzo1.data[i + 512 * 4]); //diferencia del rojo en vertical
+                    if (diferenciaVertical > 10 || diferenciaHorizontal > 10) { //si la diferencia es mayor
+                        // pintar un pixel negro
                         imagenlienzo2.data[i] = 0;
                         imagenlienzo2.data[i + 1] = 0;
                         imagenlienzo2.data[i + 2] = 0;
                         imagenlienzo2.data[i + 3] = 255;
-                    } else { //sino pintar un pixel blanco
+                    } else {
+                        //sino pintar un pixel blanco
                         imagenlienzo2.data[i] = 255;
                         imagenlienzo2.data[i + 1] = 255;
                         imagenlienzo2.data[i + 2] = 255;
                         imagenlienzo2.data[i + 3] = 255;
                     }
                 }
-                //pintar los contornos en el canvas 2
+                //pintar los contornos en el lienzo2
                 canvas2.putImageData(imagenlienzo2, 0, 0);
             }
         }
