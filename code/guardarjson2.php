@@ -3,6 +3,7 @@
 $archivo = "../data/prueba.json";
 
 $datos = [ //lo recibe del fichero javascript por el metodo get
+    'archivo' => $_GET ['archivo'],
     'elemento' => $_GET ['patron'],
     'datos'=> $_GET['datos']
 ];
