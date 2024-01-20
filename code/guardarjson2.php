@@ -1,6 +1,6 @@
 <?php
 
-$archivo = "../datos/prueba.json";
+$archivo = "../data/prueba.json";
 
 $datos = [ //lo recibe del fichero javascript por el metodo get
     'elemento' => $_GET ['patron'],
